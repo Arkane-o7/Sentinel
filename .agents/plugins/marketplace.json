@@ -1,0 +1,20 @@
+{
+  "name": "sentinel",
+  "interface": {
+    "displayName": "Sentinel"
+  },
+  "plugins": [
+    {
+      "name": "sentinel",
+      "source": {
+        "source": "local",
+        "path": "./dist"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

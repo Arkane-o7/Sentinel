@@ -1,0 +1,15 @@
+{
+  "name": "sentinel",
+  "owner": {
+    "name": "leepokai"
+  },
+  "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+  "plugins": [
+    {
+      "name": "sentinel",
+      "source": "./",
+      "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+      "version": "0.1.0"
+    }
+  ]
+}

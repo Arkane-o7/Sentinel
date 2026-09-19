@@ -1,0 +1,6 @@
+
+> sentinel-agent-guard@0.1.0 test:browser
+> node scripts/browser-check.js
+
+Sentinel dashboard: http://127.0.0.1:62226
+Browser checks passed: live empty state; labeled fixture timeline, graph, desktop/mobile layout; untrusted text escaping; no JS errors.

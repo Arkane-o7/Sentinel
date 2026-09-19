@@ -1,0 +1,9 @@
+{
+  "name": "sentinel",
+  "version": "0.1.0",
+  "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+  "author": {
+    "name": "leepokai"
+  },
+  "license": "MIT"
+}

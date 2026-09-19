@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "allowJs": true, "checkJs": false, "noEmit": true, "strict": true,
+    "module": "NodeNext", "moduleResolution": "NodeNext", "target": "ES2023", "types": ["node"], "skipLibCheck": true
+  },
+  "include": ["src/sentinel/types.ts", "src/sentinel/*.js"]
+}

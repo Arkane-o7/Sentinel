@@ -1,0 +1,19 @@
+{
+  "name": "sentinel",
+  "version": "0.1.0",
+  "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+  "settings": [
+    {
+      "name": "Jev API key",
+      "description": "TypeSafe key from console.typesafe.ai (leave empty if you use the AI Gateway key).",
+      "envVar": "JEV_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "Vercel AI Gateway key",
+      "description": "Alternative to the Jev key: a vck_\u2026 key for model typesafe-ai/jev.",
+      "envVar": "AI_GATEWAY_API_KEY",
+      "sensitive": true
+    }
+  ]
+}

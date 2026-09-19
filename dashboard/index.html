@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sentinel · Trajectory monitor</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="brand" aria-label="Sentinel home"
+        ><span class="mark" aria-hidden="true">◈</span> SENTINEL</a
+      ><span class="strap"
+        >Behavioral drift detection for autonomous AI agents.</span
+      ><span class="connection" id="connection">CONNECTING</span>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">OBSERVABLE BEHAVIOR / CURRENT INTENT</p>
+          <h1>Your agent didn’t go rogue<br />in one tool call.</h1>
+          <p class="subline">Sentinel watches the trajectory.</p>
+        </div>
+        <div class="controls">
+          <button id="run">
+            Run attack demo <span aria-hidden="true">↗</span>
+          </button>
+          <p id="mode">Scripted actor. Real Jev judgments.</p>
+        </div>
+      </section>
+      <div id="error" role="alert" hidden></div>
+      <section class="task">
+        <div>
+          <span class="eyebrow">ACTIVE USER INTENT</span>
+          <p id="intent">
+            Research TypeSafe AI and write a short markdown report.
+          </p>
+        </div>
+        <div class="session">
+          <span>RESEARCH AGENT</span><code id="session">Awaiting session</code>
+        </div>
+      </section>
+      <div class="workspace">
+        <section class="trajectory-panel">
+          <div class="section-head">
+            <h2>Execution trajectory</h2>
+            <span id="phase">Ready</span>
+          </div>
+          <div id="timeline" aria-live="polite">
+            <div class="empty">
+              <span class="empty-symbol">↳</span>
+              <h3>Every action has a story.</h3>
+              <p>
+                Run the local demo to follow normal research, an injected
+                instruction, and a blocked workaround.
+              </p>
+              <p class="muted">
+                Only fake secrets are used. No external submission runs.
+              </p>
+            </div>
+          </div>
+        </section>
+        <aside>
+          <section class="metric">
+            <div class="section-head">
+              <h2>Trajectory drift</h2>
+              <span id="status" class="badge">AWAITING DATA</span>
+            </div>
+            <div class="score">
+              <span id="score">—</span
+              ><span class="percent" id="percent" hidden>%</span>
+            </div>
+            <div class="meter"><div id="meter"></div></div>
+            <p id="score-note">
+              A judgment appears after the next proposed action.
+            </p>
+            <div class="chart-wrap">
+              <svg
+                id="chart"
+                viewBox="0 0 400 130"
+                role="img"
+                aria-label="Drift over time"
+              >
+                <g class="grid"><path d="M30 12H390M30 62H390M30 112H390" /></g>
+                <g class="axis">
+                  <text x="0" y="16">100</text>
+                  <text x="8" y="66">50</text>
+                  <text x="16" y="116">0</text>
+                </g>
+                <path id="drift-path" />
+                <g id="points"></g>
+              </svg>
+              <div class="chart-caption">
+                <span>DRIFT OVER TIME</span><span id="actions">0 actions</span>
+              </div>
+            </div>
+          </section>
+          <section class="why">
+            <div class="section-head">
+              <h2>Why this verdict?</h2>
+              <span>SUPPORTING SIGNALS</span>
+            </div>
+            <div id="signals"></div>
+            <p id="evidence">
+              Current intent, recent actions, and prior denials are evaluated
+              together.
+            </p>
+          </section>
+          <section class="objective" id="objective-box" hidden>
+            <span class="eyebrow">PREVIOUSLY BLOCKED OBJECTIVE</span>
+            <p id="objective"></p>
+            <span class="muted"
+              >A different tool can pursue the same objective.</span
+            >
+          </section>
+        </aside>
+      </div>
+      <footer>
+        <span>Sentinel = jev-guard + trajectory drift detection.</span
+        ><span>Research prototype · A guardrail, not a security sandbox.</span>
+      </footer>
+    </main>
+  </body>
+</html>

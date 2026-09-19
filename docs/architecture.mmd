@@ -1,0 +1,16 @@
+flowchart TD
+  U["Current user messages"] --> C["Compact session and trajectory"]
+  H["Inherited agent hooks and adapters"] --> A["Proposed tool action"]
+  R["Tool results"] --> S["Upstream Jev content scan"]
+  S --> C
+  C --> J["One Jev request"]
+  A --> J
+  J --> L["Upstream action-local policy"]
+  J --> D["Trajectory drift and supporting signals"]
+  C --> B["Blocked-objective matching"]
+  L --> P["Strictest verdict wins"]
+  D --> P
+  B --> P
+  P --> V["Allow / ask or pause / deny"]
+  V --> C
+  C --> UI["Local dashboard and drift history"]

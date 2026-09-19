@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+logos/
+video/node_modules/
+video/out/
+
+dist/
+work/
+output/
+artifacts/*.json
+artifacts/*.webm
+artifacts/*.mp4
