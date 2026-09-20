@@ -18,7 +18,7 @@ Sentinel is built on top of [jev-guard](https://github.com/leepokai/jev-guard)'s
 
 ## Demo and validation status
 
-The deterministic actor, live Jev detection path, dashboard, synthetic evaluation runner, and recording script are implemented. **Live model validation is pending a configured Jev credential.** No detection rates, illustrative scores, or mock responses are presented as real results. The screenshot above shows the honest pre-judgment state.
+The deterministic actor, live Jev detection path, dashboard, synthetic evaluation runner, and recording script are implemented. **Live model validation is blocked by provider account verification (HTTP 403).** A configured Gateway credential reached the service, but no model judgments were returned. No detection rates, illustrative scores, or mock responses are presented as real results. The screenshot above shows the honest pre-judgment state.
 
 A launch video is deliberately not substituted with upstream's video or invented outcomes. Run the [recording flow](docs/recording.md) to generate `artifacts/sentinel-demo.mp4` from a successful real Jev capture. The replay is visibly labeled as recorded.
 
@@ -35,9 +35,11 @@ Existing Jev API backends, retries, timeouts, skill scanning/cache, action-risk 
 
 ## Quickstart
 
-Requires Node.js 22.13+ and npm. Work from this repository checkout; Sentinel has not been published to npm or a remote marketplace.
+Requires Node.js 22.13+ and npm. Work from this repository checkout; Sentinel has not been published to npm.
 
 ```bash
+git clone https://github.com/Arkane-o7/Sentinel.git
+cd Sentinel
 npm ci
 # Configure either credential in your local environment:
 export JEV_API_KEY='your-typesafe-key'
@@ -58,7 +60,7 @@ node src/cli.js install codex     # Then trust hooks through /hooks in Codex.
 # Optional: npm link creates the local sentinel command.
 ```
 
-The optional native Codex marketplace points to the generated `dist/` plugin bundle; run `npm run build` before using that marketplace. The direct hook installer above does not require a build.
+The native Codex marketplace points to this repository’s `main` branch. The direct hook installer above does not require a build.
 
 Installation writes host configuration. Do not move the checkout after installation without reinstalling hooks. Remove any separately installed upstream plugin if you do not want duplicate guards. Sentinel's installer leaves unrelated hooks intact.
 

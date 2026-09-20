@@ -13,5 +13,7 @@
     "jev"
   ],
   "logo": "assets/icon.svg",
-  "hooks": "./hooks/cursor.json"
+  "hooks": "./hooks/cursor.json",
+  "repository": "https://github.com/Arkane-o7/Sentinel",
+  "homepage": "https://github.com/Arkane-o7/Sentinel"
 }

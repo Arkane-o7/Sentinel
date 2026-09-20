@@ -12,7 +12,7 @@ Inspected upstream commit: `94996ea80b6b308327ac2077706a29ce6abd3ba0`.
 - `src/skills.js`: instruction-file discovery, bounded file scans, content-hash cache with policy re-evaluation. Preserved.
 - `src/hook.js`: Claude/Codex/Copilot/Gemini/Cursor dialect translation. `src/acp.js`, `src/opencode.js`, and the pi extension preserve host-specific runtime integration.
 
-Upstream's 13 tests were run before changes: 12 passed; the installer test failed when the checkout directory was not named jev-guard. The installer identified itself through a substring in its executable path. Sentinel gives installed commands an explicit marker and tests repeated installation. The optional native Codex marketplace targets the generated `./dist` bundle, avoiding reliance on root-local marketplace paths; see the [native plugin packaging format](https://developers.openai.com/plugins/build/plugins). The inherited suite now runs in action-local compatibility mode; additional tests exercise the default trajectory path.
+Upstream's 13 tests were run before changes: 12 passed; the installer test failed when the checkout directory was not named jev-guard. The installer identified itself through a substring in its executable path. Sentinel gives installed commands an explicit marker and tests repeated installation. The native Codex marketplace references `Arkane-o7/Sentinel` on `main`; see the [native plugin packaging format](https://developers.openai.com/plugins/build/plugins). The inherited suite now runs in action-local compatibility mode; additional tests exercise the default trajectory path.
 
 ## Sentinel addition
 

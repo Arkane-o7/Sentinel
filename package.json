@@ -100,5 +100,13 @@
     "globals": "^17.12.0",
     "playwright": "^1.63.0",
     "typescript": "^7.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arkane-o7/Sentinel.git"
+  },
+  "homepage": "https://github.com/Arkane-o7/Sentinel#readme",
+  "bugs": {
+    "url": "https://github.com/Arkane-o7/Sentinel/issues"
   }
 }
