@@ -1,3 +1,4 @@
+import { compact } from "./sentinel/trajectory.js";
 import { failClosed } from "./sentinel/availability.js";
 // OpenCode plugin. `sentinel install opencode` drops a one-line shim into ~/.config/opencode/plugins/ that re-exports this.
 // tool.execute.before throws to block; permission.ask (only fires for tools you set to "ask" in opencode.json)
@@ -45,7 +46,7 @@ export const JevGuard = async ({ client, directory }) => {
         ? scanInstructionsCached({ text: output.output, source })
         : scanContent({ text: output.output, tool: input.tool, source: preview(input.args, 120), task: readSession(input.sessionID).prompts.at(-1)?.text })
       ).catch(() => null);
-      remember(input.sessionID, "results", { tool: input.tool, source, summary: `${output.output.length} characters; ${r?.flagged ? "untrusted instruction flagged" : "result observed"}` });
+      remember(input.sessionID, "results", { tool: input.tool, source, summary: `${output.output.length} characters; ${r?.flagged ? "untrusted instruction flagged" : "result observed"}. Untrusted result excerpt: ${compact(output.output, 450)}` });
       if (r?.flagged) remember(input.sessionID, "flags", { kind: r.kind, source, tool: input.tool, p: +r.p.toFixed(2), excerpt: excerpt(output.output), reported: true });
       if (!r?.flagged) return;
       toast(r.message);

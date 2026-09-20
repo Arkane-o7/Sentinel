@@ -14,10 +14,11 @@ Environment values are strings. Thresholds must be finite in `[0,1]`, with watch
 | `SENTINEL_CONFIG` | `~/.sentinel/config.json` | Credential configuration path; upstream config is fallback when no explicit path is set |
 | `SENTINEL_SESSIONS` | `~/.sentinel/sessions` | Local private state directory |
 | `SENTINEL_PORT` | `4317` | Dashboard port, bound to 127.0.0.1 |
-| `JEV_API_KEY` | unset | TypeSafe credential (first precedence) |
+| `OPENROUTER_API_KEY` | unset | OpenRouter credential (first environment precedence) |
+| `JEV_API_KEY` | unset | TypeSafe credential |
 | `AI_GATEWAY_API_KEY` | unset | Vercel AI Gateway credential |
 | `VERCEL_OIDC_TOKEN` | unset | Gateway OIDC credential |
-| `JEV_MODEL` | backend default | `jev-latest` direct / `typesafe-ai/jev` gateway |
+| `JEV_MODEL` | backend default | `typesafe/jev-1.13` OpenRouter / `jev-latest` direct / `typesafe-ai/jev` gateway |
 | `JEV_GUARD_TIMEOUT_MS` | `20000` | Total request budget, including up to two retries |
 | `JEV_GUARD_DENY_SCORE` | `2.5` | Upstream critical risk boundary on 0–3 scale |
 | `JEV_GUARD_ASK_SCORE` | `1.5` | Upstream approval risk boundary |
@@ -36,4 +37,10 @@ Environment values are strings. Thresholds must be finite in `[0,1]`, with watch
 
 Session flags retain 10 sources, objectives 24, events 60, and chart history 100 judgments. Jev receives smaller bounded subsets. Upstream pruning removes week-old sessions only when the session count exceeds 200; it is not a guaranteed seven-day deletion policy. Users can delete session files to reset history, which also removes circumvention memory. Do so only when no hooks for that session are running.
 
-The dashboard takes a host session ID, not a state-file path. State filenames are hashes and are not exposed as a directory listing. No raw results or API credentials are served by the dashboard, but paths, argument summaries and user intent remain sensitive.
+The dashboard takes a host session ID, not a state-file path. State filenames are hashes and are not exposed as a directory listing. The dashboard serves bounded result excerpts, paths, argument summaries and user intent, which can remain sensitive despite best-effort redaction. It does not serve API credentials or entire raw result bodies.
+
+## Provider selection
+
+Explicit environment credentials win over saved configuration: `OPENROUTER_API_KEY`, then `JEV_API_KEY`, then `AI_GATEWAY_API_KEY`, then `VERCEL_OIDC_TOKEN`. Without one, saved `openRouterApiKey`, `jevApiKey`, then `aiGatewayApiKey` are tried in that order. A failed request never silently switches providers.
+
+OpenRouter sends native `state` and `questions` to `https://openrouter.ai/api/alpha/decisions`, with model `typesafe/jev-1.13`. This is an alpha API, so its contract may change. TypeSafe uses `https://api.typesafe.ai/v1/systemone`; Vercel uses `https://ai-gateway.vercel.sh/v4/ai/evaluation-model`. Only the Vercel request includes the inherited zero-data-retention option; do not infer equivalent retention policies for other providers.

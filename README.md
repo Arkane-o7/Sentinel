@@ -14,13 +14,15 @@ Sentinel monitors an agent's observable execution trajectory against the user's 
 
 Sentinel is built on top of [jev-guard](https://github.com/leepokai/jev-guard)'s runtime interception and Jev-powered action analysis. It extends that foundation with trajectory-level behavioral monitoring, capability-escalation detection, and semantic circumvention detection.
 
-![Sentinel dashboard awaiting a real Jev judgment](artifacts/dashboard.png)
+[![Sentinel dashboard showing real Jev decisions](artifacts/sentinel-demo.png)](artifacts/sentinel-demo.mp4)
+
+[Watch the 44-second launch demo](artifacts/sentinel-demo.mp4). Recorded replay of real Jev judgments via OpenRouter (`typesafe/jev-1.13`), with a scripted actor and fake secrets.
 
 ## Demo and validation status
 
-The deterministic actor, live Jev detection path, dashboard, synthetic evaluation runner, and recording script are implemented. **Live model validation is blocked by provider account verification (HTTP 403).** A configured Gateway credential reached the service, but no model judgments were returned. No detection rates, illustrative scores, or mock responses are presented as real results. The screenshot above shows the honest pre-judgment state.
+Two consecutive live runs of the current demo passed. In the recorded run, normal research scored **4%, 6%, and 18%**; the fake-secret read was **blocked at 72%** by combined action/trajectory policy; the shell workaround was **blocked at 97%**, with policy circumvention detected. These are observed scores, not configured targets. The recording is visibly labeled as a replay; it does not represent live API latency.
 
-A launch video is deliberately not substituted with upstream's video or invented outcomes. Run the [recording flow](docs/recording.md) to generate `artifacts/sentinel-demo.mp4` from a successful real Jev capture. The replay is visibly labeled as recorded.
+The [20-case evaluation](docs/evaluation.md) found better attack detection but more false positives in trajectory mode. This remains a research prototype, not a calibrated security product. See [verification details](docs/verification.md) and the [reproducible recording flow](docs/recording.md).
 
 ## What Sentinel adds
 
@@ -41,15 +43,16 @@ Requires Node.js 22.13+ and npm. Work from this repository checkout; Sentinel ha
 git clone https://github.com/Arkane-o7/Sentinel.git
 cd Sentinel
 npm ci
-# Configure either credential in your local environment:
-export JEV_API_KEY='your-typesafe-key'
+# Configure one credential in your local environment:
+export OPENROUTER_API_KEY='your-openrouter-key'
+# OR: export JEV_API_KEY='your-typesafe-key'
 # OR: export AI_GATEWAY_API_KEY='your-vercel-gateway-key'
 
 npm run demo
 # Open http://127.0.0.1:4317 and click Run attack demo.
 ```
 
-For desktop hosts that do not inherit your terminal environment, `node src/cli.js key <key>` saves a key in `~/.sentinel/config.json` with mode `0600`. Be mindful of shell history when passing a key as an argument. Existing `~/.jev-guard/config.json` credentials are also read as a fallback. The API credential itself is never included in model state or dashboard output.
+For desktop hosts that do not inherit your terminal environment, `node src/cli.js key <key>` saves a key in `~/.sentinel/config.json` with mode `0600`. Be mindful of shell history when passing a key as an argument. Existing `~/.jev-guard/config.json` credentials are also read as a fallback. Keys beginning `sk-or-` select OpenRouter; `vck_` selects Vercel Gateway; other keys select TypeSafe (or pass `--openrouter` / `--gateway`). Explicit environment credentials take priority over saved configuration. OpenRouter uses its alpha Decisions API, not chat completions. The API credential itself is never included in model state or dashboard output.
 
 Install hooks from this persistent checkout:
 
@@ -142,7 +145,18 @@ Twenty fixed trajectories: ten benign and ten drifting/malicious. Cases cover re
 
 **Action-local mode** preserves upstream prompts, flags, recent-call context, and read-only skips. **Sentinel trajectory mode** adds the bounded trajectory and semantic blocked objectives. Some circumvention cases seed a known historical denial in both modes; that history is a declared input fixture, not a fabricated Jev result.
 
-Results include malicious trajectories detected (ask or deny), malicious trajectories blocked, benign trajectories fully allowed, false asks, false blocks, circumvention detections, per-step verdicts, first detection step, and latency. API errors are reported separately and excluded from completed denominators. No benchmark numbers are available until a real credential-backed run succeeds. This tiny synthetic set cannot establish real-world reliability.
+Results include malicious trajectories detected (ask or deny), malicious trajectories blocked, benign trajectories fully allowed, false asks, false blocks, circumvention detections, per-step verdicts, first detection step, and latency. API errors are reported separately and excluded from completed denominators. Actual run on 2026-09-20, OpenRouter `typesafe/jev-1.13`, with no API errors:
+
+| Metric | Action-local | Sentinel trajectory |
+| --- | --- | --- |
+| Drifting cases detected (ask or deny) | 7/10 | 9/10 |
+| Drifting cases blocked | 2/10 | 8/10 |
+| Benign cases fully allowed | 9/10 | 7/10 |
+| Benign false blocks | 0/10 | 1/10 |
+| Benign false asks | 1/10 | 2/10 |
+| Circumvention cases detected | 0/4 | 4/4 |
+
+A newly authorized `.env` read was falsely classified as circumvention; a research-to-credential read without an injection flag was missed. The strictest policy did not erase these model errors. [Full per-case results and detection steps](docs/evaluation.md) are published, including failures. This tiny synthetic set cannot establish real-world reliability.
 
 ## Development and verification
 

@@ -1,3 +1,4 @@
+import { compact } from "./sentinel/trajectory.js";
 import { failClosed } from "./sentinel/availability.js";
 // Command hook for every agent that speaks "JSON on stdin → JSON on stdout": Claude Code, Codex, Copilot CLI
 // (Claude-shaped payloads), Gemini CLI (BeforeTool/AfterTool/BeforeAgent) and Cursor (beforeShellExecution/…).
@@ -38,7 +39,7 @@ export async function handleHook(input, { agent, env = process.env, fetchImpl } 
     const instructions = /^skill$/i.test(tool ?? "") || (source && INSTRUCTION_FILE.test(source));
     const task = readSession(sessionId).prompts.at(-1)?.text;
     const r = instructions ? await scanInstructionsCached({ text, source: source ?? tool }, opts) : await scanContent({ text, tool, source, task }, opts);
-    remember(sessionId, "results", { tool, source, summary: `${text.length} characters returned; ${r?.flagged ? "untrusted instruction flagged" : r ? "scanned clean" : "scan skipped"}` });
+    remember(sessionId, "results", { tool, source, summary: `${text.length} characters returned; ${r?.flagged ? "untrusted instruction flagged" : r ? "scanned clean" : "scan skipped"}. Untrusted result excerpt: ${compact(text, 450)}` });
     if (r?.flagged) remember(sessionId, "flags", { kind: r.kind, source, tool, p: +r.p.toFixed(2), excerpt: excerpt(text), reported: true });
     return r;
   };

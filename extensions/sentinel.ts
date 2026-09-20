@@ -1,3 +1,4 @@
+import { compact } from "../src/sentinel/trajectory.js";
 import { failClosed } from "../src/sentinel/availability.js";
 // pi extension: block/confirm dangerous tool calls, flag AI-directed text in tool results.
 // Load with `pi -e ./extensions/sentinel.ts`, `sentinel install pi`, or the local extension path.
@@ -36,7 +37,7 @@ export default function (pi: ExtensionAPI) {
       r = source && INSTRUCTION_FILE.test(source)
         ? await scanInstructionsCached({ text, source }, { signal: ctx.signal })
         : await scanContent({ text, tool: event.toolName, source, task: readSession(sessionId(ctx)).prompts.at(-1)?.text }, { signal: ctx.signal });
-      remember(sessionId(ctx), "results", { tool: event.toolName, source, summary: `${text.length} characters; ${r?.flagged ? "untrusted instruction flagged" : "result observed"}` });
+      remember(sessionId(ctx), "results", { tool: event.toolName, source, summary: `${text.length} characters; ${r?.flagged ? "untrusted instruction flagged" : "result observed"}. Untrusted result excerpt: ${compact(text, 450)}` });
       if (r?.flagged) remember(sessionId(ctx), "flags", { kind: r.kind, source, tool: event.toolName, p: +r.p.toFixed(2), excerpt: excerpt(text), reported: true });
     } catch (err) {
       ctx.ui.notify(`sentinel: ${(err as Error).message}`, "warning");

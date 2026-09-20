@@ -22,10 +22,10 @@ const USAGE = `Sentinel — behavioral drift detection for autonomous AI agents.
                                           would not expect; cached by content hash, exit 2 if anything is flagged
   sentinel install <agent>               Register in that agent's user config:
                                           claude | codex | copilot | gemini | cursor | pi | opencode
-  sentinel key <api key>                 Save the key to ~/.sentinel/config.json (0600); vck_… keys are
-                                          treated as Vercel AI Gateway keys, anything else as TypeSafe
+  sentinel key <api key>                 Save the key to ~/.sentinel/config.json (0600); sk-or-… keys use OpenRouter,
+                                          vck_… uses Vercel AI Gateway, otherwise TypeSafe
 
-Credentials are read from JEV_API_KEY / AI_GATEWAY_API_KEY / VERCEL_OIDC_TOKEN first, then from that file.`;
+Credentials are read from OPENROUTER_API_KEY / JEV_API_KEY / AI_GATEWAY_API_KEY / VERCEL_OIDC_TOKEN first, then from that file.`;
 
 switch (cmd) {
   case "demo": {
@@ -92,13 +92,14 @@ switch (cmd) {
     const { CONFIG_FILE, readConfig } = await import("./jev.js");
     const key = rest.find((a) => !a.startsWith("--"));
     if (!key) die("key needs the API key as an argument");
+    const openrouter = rest.includes("--openrouter") || key.startsWith("sk-or-");
     const gateway = rest.includes("--gateway") || key.startsWith("vck_");
-    const cfg = { ...readConfig(), [gateway ? "aiGatewayApiKey" : "jevApiKey"]: key };
+    const cfg = { ...readConfig(), [openrouter ? "openRouterApiKey" : gateway ? "aiGatewayApiKey" : "jevApiKey"]: key };
     const configFile = process.env.SENTINEL_CONFIG ?? process.env.JEV_GUARD_CONFIG ?? CONFIG_FILE;
     mkdirSync(dirname(configFile), { recursive: true, mode: 0o700 });
     writeFileSync(configFile, JSON.stringify(cfg, null, 2) + "\n", { mode: 0o600 });
     chmodSync(configFile, 0o600);
-    console.log(`sentinel: ${gateway ? "Vercel AI Gateway" : "TypeSafe"} key saved to ${configFile}`);
+    console.log(`sentinel: ${openrouter ? "OpenRouter" : gateway ? "Vercel AI Gateway" : "TypeSafe"} key saved to ${configFile}`);
     break;
   }
   default:
@@ -176,7 +177,7 @@ function install(target) {
 
 async function keyHint() {
   const { backend } = await import("./jev.js");
-  if (!backend()) console.log("No API key found yet: run `sentinel key <key>` (or export JEV_API_KEY / AI_GATEWAY_API_KEY). Sentinel pauses tool calls until a judgment is available.");
+  if (!backend()) console.log("No API key found yet: run `sentinel key <key>` (or export OPENROUTER_API_KEY / JEV_API_KEY / AI_GATEWAY_API_KEY). Sentinel pauses tool calls until a judgment is available.");
 }
 
 function readJson(file) { return existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {}; }

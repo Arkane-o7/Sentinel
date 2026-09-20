@@ -16,7 +16,7 @@ export function emptyTrajectory(sessionId = "") {
     status: "healthy",
   };
 }
-/** Only bounded summaries are retained. Never retain raw result bodies.
+/** Only bounded summaries/excerpts are retained, not full result bodies.
  * @param {unknown} value @param {number} max */
 export function compact(value, max = 600) {
   const text =

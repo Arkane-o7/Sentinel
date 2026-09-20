@@ -5,7 +5,7 @@ Inspected upstream commit: `94996ea80b6b308327ac2077706a29ce6abd3ba0`.
 ## Preserved foundation
 
 - `src/cli.js`: dispatches hooks, ACP proxy, one-shot checks, scanning, key storage, and host installation. Upstream was native ESM with no build step/runtime dependency.
-- `src/jev.js`: one structured request to TypeSafe or Vercel Gateway. Maps noul/boolean probabilities, choice labels, scores and confidence; two retries on network/429/5xx inside one 20-second timeout. Environment credentials precede private local config. Gateway asks for zero data retention.
+- `src/jev.js`: one structured request to TypeSafe, Vercel Gateway, or the added OpenRouter Decisions backend. Maps noul/boolean probabilities, choice labels, scores and confidence; two retries on network/429/5xx inside one 20-second timeout. Environment credentials precede private local config. Gateway asks for zero data retention.
 - `src/guard.js`: action risk/approval/requested/untrusted questions and strictest local policy; external result scanning; separate questions for intentionally instructional files.
 - `src/context.js`: recent user text and explicit assistant intent from session hooks, adapter-supplied messages or a bounded transcript tail. Tool-result blocks never count as user messages.
 - `src/session.js`: shared session JSON across hook processes. Originally six prompts, three intents, twelve calls and ten flags. Sentinel adds bounded trajectory fields, atomic writes and serialization.

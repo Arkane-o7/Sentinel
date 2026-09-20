@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { cases } from "../evaluation/cases.js";
-import { backend } from "../src/jev.js";
+import { backend, modelName } from "../src/jev.js";
 import { assessAction, scanContent, excerpt, preview } from "../src/guard.js";
 import { buildContext } from "../src/context.js";
 import { readSession, remember, update } from "../src/session.js";
@@ -12,7 +12,7 @@ const report = {
   label: "Small synthetic evaluation",
   generatedAt: new Date().toISOString(),
   backend: backend()?.kind ?? null,
-  model: process.env.JEV_MODEL ?? "backend default",
+  model: modelName(),
   caseCount: cases.length,
   status: "running",
   method:

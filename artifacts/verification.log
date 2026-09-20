@@ -10,218 +10,248 @@ TAP version 13
 # Subtest: decide thresholds
 ok 1 - decide thresholds
   ---
-  duration_ms: 0.510333
+  duration_ms: 0.547084
   type: 'test'
   ...
 # Subtest: collectText and truncate
 ok 2 - collectText and truncate
   ---
-  duration_ms: 0.148959
+  duration_ms: 0.175583
   type: 'test'
   ...
 # Subtest: assessAction skips read-only tools, scores the rest
 ok 3 - assessAction skips read-only tools, scores the rest
   ---
-  duration_ms: 0.701
+  duration_ms: 0.84575
   type: 'test'
   ...
 # Subtest: scanContent flags injection and canary, not discussion
 ok 4 - scanContent flags injection and canary, not discussion
   ---
-  duration_ms: 0.20175
+  duration_ms: 0.243833
   type: 'test'
   ...
 # Subtest: hook: PreToolUse deny / ask / codex warn / PostToolUse flag
 ok 5 - hook: PreToolUse deny / ask / codex warn / PostToolUse flag
   ---
-  duration_ms: 1.8355
+  duration_ms: 2.03525
   type: 'test'
   ...
 # Subtest: acp proxy: rejects dangerous terminal/create, asks on medium, flags read content
 ok 6 - acp proxy: rejects dangerous terminal/create, asks on medium, flags read content
   ---
-  duration_ms: 76.642959
+  duration_ms: 81.619292
   type: 'test'
   ...
 # Subtest: hook dialects: copilot, gemini, cursor
 ok 7 - hook dialects: copilot, gemini, cursor
   ---
-  duration_ms: 1.7395
+  duration_ms: 1.9655
   type: 'test'
   ...
 # Subtest: opencode plugin: throws on deny, rewrites flagged output, drives permission.ask
 ok 8 - opencode plugin: throws on deny, rewrites flagged output, drives permission.ask
   ---
-  duration_ms: 2.046667
+  duration_ms: 1.088667
   type: 'test'
   ...
 # Subtest: install writes valid config for every target
 ok 9 - install writes valid config for every target
   ---
-  duration_ms: 346.570542
+  duration_ms: 352.795375
   type: 'test'
   ...
 # Subtest: key: config file is read when env has no credentials
 ok 10 - key: config file is read when env has no credentials
   ---
-  duration_ms: 49.171167
+  duration_ms: 49.453917
   type: 'test'
   ...
 # Subtest: context: the user's request lifts ask, flagged content turns a follow-up into deny, instruction files get reported
 ok 11 - context: the user's request lifts ask, flagged content turns a follow-up into deny, instruction files get reported
   ---
-  duration_ms: 5.916791
+  duration_ms: 8.127666
   type: 'test'
   ...
 # Subtest: scan-skills: sweeps instruction files, caches by hash, exits 2 when flagged
 ok 12 - scan-skills: sweeps instruction files, caches by hash, exits 2 when flagged
   ---
-  duration_ms: 6.496791
+  duration_ms: 6.490875
   type: 'test'
   ...
 # Subtest: ask: retries 5xx and network errors, gives up after three tries, never outlives its budget
 ok 13 - ask: retries 5xx and network errors, gives up after three tries, never outlives its budget
   ---
-  duration_ms: 3666.22525
+  duration_ms: 3667.005458
   type: 'test'
   ...
-# sentinel: no credentials: run `sentinel key <key>` or set JEV_API_KEY / AI_GATEWAY_API_KEY
-# Subtest: normal research stays low with real request schema and bounded context
-ok 14 - normal research stays low with real request schema and bounded context
+# Subtest: OpenRouter uses Decisions endpoint and preserves native typed questions and answers
+ok 14 - OpenRouter uses Decisions endpoint and preserves native typed questions and answers
   ---
-  duration_ms: 5.662042
+  duration_ms: 1.375875
+  type: 'test'
+  ...
+# Subtest: explicit environment credentials win over stored OpenRouter configuration
+ok 15 - explicit environment credentials win over stored OpenRouter configuration
+  ---
+  duration_ms: 0.897167
+  type: 'test'
+  ...
+# Subtest: model overrides and original transport defaults remain distinct
+ok 16 - model overrides and original transport defaults remain distinct
+  ---
+  duration_ms: 0.08325
+  type: 'test'
+  ...
+# Subtest: OpenRouter auth failures do not silently switch backend
+ok 17 - OpenRouter auth failures do not silently switch backend
+  ---
+  duration_ms: 0.26875
+  type: 'test'
+  ...
+# Subtest: CLI detects OpenRouter keys and saves them under the correct private config field
+ok 18 - CLI detects OpenRouter keys and saves them under the correct private config field
+  ---
+  duration_ms: 29.110791
+  type: 'test'
+  ...
+# sentinel: no credentials: run `sentinel key <key>` or set OPENROUTER_API_KEY / JEV_API_KEY / AI_GATEWAY_API_KEY
+# Subtest: normal research stays low with real request schema and bounded context
+ok 19 - normal research stays low with real request schema and bounded context
+  ---
+  duration_ms: 8.009708
   type: 'test'
   ...
 # Subtest: normal coding stays low and records history
-ok 15 - normal coding stays low and records history
+ok 20 - normal coding stays low and records history
   ---
-  duration_ms: 4.036958
+  duration_ms: 3.681209
   type: 'test'
   ...
 # Subtest: new legitimate user instructions update active intent, including repeated messages
-ok 16 - new legitimate user instructions update active intent, including repeated messages
+ok 21 - new legitimate user instructions update active intent, including repeated messages
   ---
-  duration_ms: 4.2045
+  duration_ms: 4.412292
   type: 'test'
   ...
 # Subtest: research credential access raises drift; subsequent shell and Python retries match objective
-ok 17 - research credential access raises drift; subsequent shell and Python retries match objective
+ok 22 - research credential access raises drift; subsequent shell and Python retries match objective
   ---
-  duration_ms: 2.942083
+  duration_ms: 3.300334
   type: 'test'
   ...
 # Subtest: untrusted-content flag survives result scan and later evaluation
-ok 18 - untrusted-content flag survives result scan and later evaluation
+ok 23 - untrusted-content flag survives result scan and later evaluation
   ---
-  duration_ms: 2.891167
+  duration_ms: 2.603334
   type: 'test'
   ...
 # Subtest: Jev semantic circumvention blocks nonliteral equivalents
-ok 19 - Jev semantic circumvention blocks nonliteral equivalents
+ok 24 - Jev semantic circumvention blocks nonliteral equivalents
   ---
-  duration_ms: 1.251375
+  duration_ms: 1.604708
   type: 'test'
   ...
 # Subtest: exact matcher is operation/resource-specific, canonical, and avoids printed commands
-ok 20 - exact matcher is operation/resource-specific, canonical, and avoids printed commands
+ok 25 - exact matcher is operation/resource-specific, canonical, and avoids printed commands
   ---
-  duration_ms: 0.182042
+  duration_ms: 0.233291
   type: 'test'
   ...
 # Subtest: new user authorization re-evaluates historical denial rather than permanently banning a resource
-ok 21 - new user authorization re-evaluates historical denial rather than permanently banning a resource
+ok 26 - new user authorization re-evaluates historical denial rather than permanently banning a resource
   ---
-  duration_ms: 1.89625
+  duration_ms: 2.496
   type: 'test'
   ...
 # Subtest: upstream destructive denial wins over low drift and is stored
-ok 22 - upstream destructive denial wins over low drift and is stored
+ok 27 - upstream destructive denial wins over low drift and is stored
   ---
-  duration_ms: 1.126958
+  duration_ms: 1.228875
   type: 'test'
   ...
 # Subtest: transparent thresholds, overrides, and malformed probabilities
-ok 23 - transparent thresholds, overrides, and malformed probabilities
+ok 28 - transparent thresholds, overrides, and malformed probabilities
   ---
-  duration_ms: 0.379709
+  duration_ms: 0.436458
   type: 'test'
   ...
 # Subtest: new drift ask is enforced on Codex and Gemini hosts without approval support
-ok 24 - new drift ask is enforced on Codex and Gemini hosts without approval support
+ok 29 - new drift ask is enforced on Codex and Gemini hosts without approval support
   ---
-  duration_ms: 0.239292
+  duration_ms: 0.279584
   type: 'test'
   ...
 # Subtest: missing credentials fail closed by default with an explicit unavailable message
-ok 25 - missing credentials fail closed by default with an explicit unavailable message
+ok 30 - missing credentials fail closed by default with an explicit unavailable message
   ---
-  duration_ms: 1.761958
+  duration_ms: 1.629041
   type: 'test'
   ...
 # Subtest: read-only upstream skip does not skip Sentinel judgment; action-local mode preserves skip
-ok 26 - read-only upstream skip does not skip Sentinel judgment; action-local mode preserves skip
+ok 31 - read-only upstream skip does not skip Sentinel judgment; action-local mode preserves skip
   ---
-  duration_ms: 0.814042
+  duration_ms: 2.3635
   type: 'test'
   ...
 # Subtest: bounded compact state, redaction, and private store
-ok 27 - bounded compact state, redaction, and private store
+ok 32 - bounded compact state, redaction, and private store
   ---
-  duration_ms: 18.134666
+  duration_ms: 28.762166
   type: 'test'
   ...
-# Sentinel dashboard: http://127.0.0.1:50128
+# Sentinel dashboard: http://127.0.0.1:50968
 # Subtest: same-session concurrent judgments preserve denial for next call
-ok 28 - same-session concurrent judgments preserve denial for next call
+ok 33 - same-session concurrent judgments preserve denial for next call
   ---
-  duration_ms: 28.350625
+  duration_ms: 28.717375
   type: 'test'
   ...
 # Subtest: corrupt session fails instead of forgetting blocked objectives
-ok 29 - corrupt session fails instead of forgetting blocked objectives
+ok 34 - corrupt session fails instead of forgetting blocked objectives
   ---
-  duration_ms: 0.221625
+  duration_ms: 0.356917
   type: 'test'
   ...
 # Subtest: transcript first complete record is retained; tool results cannot become user intent
-ok 30 - transcript first complete record is retained; tool results cannot become user intent
+ok 35 - transcript first complete record is retained; tool results cannot become user intent
   ---
-  duration_ms: 0.257333
+  duration_ms: 0.738375
   type: 'test'
   ...
 # Subtest: dashboard binds loopback, blocks cross-origin triggering, and renders local assets
-ok 31 - dashboard binds loopback, blocks cross-origin triggering, and renders local assets
+ok 36 - dashboard binds loopback, blocks cross-origin triggering, and renders local assets
   ---
-  duration_ms: 19.553375
+  duration_ms: 19.847708
   type: 'test'
   ...
 # Subtest: installer retains unrelated hooks even when their names contain Sentinel
-ok 32 - installer retains unrelated hooks even when their names contain Sentinel
+ok 37 - installer retains unrelated hooks even when their names contain Sentinel
   ---
-  duration_ms: 73.905417
+  duration_ms: 74.177791
   type: 'test'
   ...
 # Subtest: key command honors the explicit configuration path
-ok 33 - key command honors the explicit configuration path
+ok 38 - key command honors the explicit configuration path
   ---
-  duration_ms: 23.398584
+  duration_ms: 24.187583
   type: 'test'
   ...
 # Subtest: semantic denial survives ordinary history eviction
-ok 34 - semantic denial survives ordinary history eviction
+ok 39 - semantic denial survives ordinary history eviction
   ---
-  duration_ms: 29.043083
+  duration_ms: 29.720084
   type: 'test'
   ...
-1..34
-# tests 34
+1..39
+# tests 39
 # suites 0
-# pass 34
+# pass 39
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 4206.843292
+# duration_ms 4227.914917
 
 > sentinel-agent-guard@0.1.0 typecheck
 > tsc -p tsconfig.json

@@ -16,8 +16,8 @@ if (!existsSync(capturePath) || !JSON.parse(readFileSync(capturePath)).passed) {
   try {
     browser = await chromium.launch();
     const ctx = await browser.newContext({
-      viewport: { width: 1440, height: 1280 },
-      recordVideo: { dir: "artifacts", size: { width: 1440, height: 1280 } },
+      viewport: { width: 1440, height: 1360 },
+      recordVideo: { dir: "artifacts", size: { width: 1440, height: 1360 } },
       reducedMotion: "reduce",
     });
     const page = await ctx.newPage();

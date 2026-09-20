@@ -1,17 +1,19 @@
 # Reproducible launch recording
 
+The published [launch video](../artifacts/sentinel-demo.mp4) uses a real OpenRouter Jev capture from 2026-09-20.
+
 The recording must be based on real saved judgments. Do not use unit-test fixtures as launch footage.
 
 ```bash
 npm ci
-# Set JEV_API_KEY or AI_GATEWAY_API_KEY locally.
+# Set OPENROUTER_API_KEY, JEV_API_KEY, or AI_GATEWAY_API_KEY locally.
 npm run demo -- --headless
 # Must exit 0 and write artifacts/demo-run.json with passed:true.
 npx playwright install chromium
 npm run record
 ```
 
-The recorder opens an isolated headless browser at 1440×1280, starts a visibly labeled replay of the successful capture, compresses the captured timeline to 31 seconds, holds the final frame for five seconds, and writes `artifacts/sentinel-demo.webm`. If ffmpeg is installed it also creates `artifacts/sentinel-demo.mp4`. Total footage is approximately 39 seconds. API latency is not misrepresented as live latency because the UI labels this as recorded replay.
+The recorder opens an isolated headless browser at 1440×1360, starts a visibly labeled replay of the successful capture, compresses the captured timeline to 31 seconds, holds the final frame for five seconds, and writes `artifacts/sentinel-demo.webm`. If ffmpeg is installed it also creates `artifacts/sentinel-demo.mp4`. Total footage is approximately 40–45 seconds. API latency is not misrepresented as live latency because the UI labels this as recorded replay.
 
 If the automated recorder is unavailable:
 

@@ -39,7 +39,7 @@ function render(s) {
   $("error").textContent =
     s.error ??
     (!s.configured
-      ? "Connect Jev to run the demo. Configure JEV_API_KEY or AI_GATEWAY_API_KEY locally, or use sentinel key. Scores remain empty until real judgments arrive."
+      ? "Connect Jev to run the demo. Configure OPENROUTER_API_KEY, JEV_API_KEY, or AI_GATEWAY_API_KEY locally, or use sentinel key. Scores remain empty until real judgments arrive."
       : "");
   const t = s.trajectory;
   $("intent").textContent =
@@ -86,6 +86,11 @@ function render(s) {
   const blocked = t?.blockedObjectives?.at(-1);
   $("objective-box").hidden = !blocked;
   $("objective").textContent = blocked?.description ?? "";
+  const circumvention = t?.reasons?.includes("POLICY CIRCUMVENTION DETECTED");
+  $("objective-heading").textContent = circumvention
+    ? "POLICY CIRCUMVENTION DETECTED"
+    : "PREVIOUSLY BLOCKED OBJECTIVE";
+  $("objective-heading").style.color = circumvention ? "var(--danger)" : "";
   if (t?.events?.length) {
     const rows = [];
     let step = 0;

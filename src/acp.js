@@ -1,3 +1,4 @@
+import { compact } from "./sentinel/trajectory.js";
 import { failClosed } from "./sentinel/availability.js";
 // `sentinel acp -- <agent command...>`: a stdio proxy between any ACP client (Zed, JetBrains, ...) and any ACP agent.
 // Guards what flows through the client: terminal/create and fs/write_text_file are assessed before they are forwarded
@@ -94,7 +95,7 @@ export function runProxy(cmd, args, { stdin = process.stdin, stdout = process.st
       const r = source !== method && INSTRUCTION_FILE.test(source)
         ? await scanInstructionsCached({ text, source }, opts)
         : await scanContent({ text, tool: method, source }, opts);
-      remember(req?.params?.sessionId, "results", { tool: method, source, summary: `${text.length} characters; ${r?.flagged ? "untrusted instruction flagged" : "result observed"}` });
+      remember(req?.params?.sessionId, "results", { tool: method, source, summary: `${text.length} characters; ${r?.flagged ? "untrusted instruction flagged" : "result observed"}. Untrusted result excerpt: ${compact(text, 450)}` });
       if (r?.flagged) {
         remember(req?.params?.sessionId, "flags", { kind: r.kind, source, tool: method, p: +r.p.toFixed(2), excerpt: excerpt(text), reported: true });
         msg.result[key] = `[${r.message}]\n\n${text}`;

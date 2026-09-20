@@ -1,6 +1,7 @@
-// One fetch, two backends: TypeSafe's API when JEV_API_KEY is set, Vercel AI Gateway otherwise.
+// One fetch, three backends: OpenRouter Decisions, TypeSafe direct, or Vercel AI Gateway.
 // Question ids are ours; types are TypeSafe's (noul / choice / score). Gateway calls noul "boolean".
 const TYPESAFE_URL = "https://api.typesafe.ai/v1/systemone";
+const OPENROUTER_URL = "https://openrouter.ai/api/alpha/decisions";
 const GATEWAY_URL = "https://ai-gateway.vercel.sh/v4/ai/evaluation-model";
 
 import { readFileSync } from "node:fs";
@@ -12,13 +13,20 @@ export const CONFIG_FILE = join(homedir(), ".sentinel", "config.json");
 // Env first (CLIs inherit the shell); then ~/.sentinel/config.json written by `sentinel key`, which is what
 // GUI hosts such as Cursor or Zed need since they don't see your shell profile.
 export function backend(env = process.env) {
+  if (env.OPENROUTER_API_KEY) return { kind: "openrouter", key: env.OPENROUTER_API_KEY };
   if (env.JEV_API_KEY) return { kind: "typesafe", key: env.JEV_API_KEY };
   if (env.AI_GATEWAY_API_KEY) return { kind: "gateway", key: env.AI_GATEWAY_API_KEY, auth: "api-key" };
   if (env.VERCEL_OIDC_TOKEN) return { kind: "gateway", key: env.VERCEL_OIDC_TOKEN, auth: "oidc" };  // `vercel env pull`; expires in ~12h
   const cfg = readConfig(env);
+  if (cfg.openRouterApiKey) return { kind: "openrouter", key: cfg.openRouterApiKey };
   if (cfg.jevApiKey) return { kind: "typesafe", key: cfg.jevApiKey };
   if (cfg.aiGatewayApiKey) return { kind: "gateway", key: cfg.aiGatewayApiKey, auth: "api-key" };
   return null;
+}
+
+export function modelName(env = process.env) {
+  const kind = backend(env)?.kind;
+  return env.JEV_MODEL ?? (kind === "openrouter" ? "typesafe/jev-1.13" : kind === "gateway" ? "typesafe-ai/jev" : "jev-latest");
 }
 
 export function readConfig(env = process.env) {
@@ -31,22 +39,22 @@ export function readConfig(env = process.env) {
 /** @returns {Promise<Record<string, {p?: number, choice?: string, score?: number, probabilities?: Record<string, number>, confidence?: number}>>} */
 export async function ask(state, questions, { env = process.env, fetchImpl = fetch, signal, timeoutMs } = {}) {
   const b = backend(env);
-  if (!b) throw new Error("no credentials: run `sentinel key <key>` or set JEV_API_KEY / AI_GATEWAY_API_KEY");
+  if (!b) throw new Error("no credentials: run `sentinel key <key>` or set OPENROUTER_API_KEY / JEV_API_KEY / AI_GATEWAY_API_KEY");
   const gw = b.kind === "gateway";
   const q = gw ? mapValues(questions, (x) => (x.type === "noul" ? { ...x, type: "boolean" } : x)) : questions;
   // One budget for the whole call, retries included: every host kills a hook at ~30 s, and a hook that dies
   // never reaches the fail-closed branch. Default 20 s leaves room for process start-up.
   const budget = AbortSignal.timeout(timeoutMs ?? +(env.JEV_GUARD_TIMEOUT_MS || 20_000));
   const abort = signal ? AbortSignal.any([signal, budget]) : budget;
-  const request = () => fetchImpl(gw ? GATEWAY_URL : TYPESAFE_URL, {
+  const request = () => fetchImpl(gw ? GATEWAY_URL : b.kind === "openrouter" ? OPENROUTER_URL : TYPESAFE_URL, {
     method: "POST",
     headers: gw
       ? { Authorization: `Bearer ${b.key}`, "Content-Type": "application/json", "ai-gateway-protocol-version": "0.0.1",
-          "ai-gateway-auth-method": b.auth, "ai-evaluation-model-specification-version": "4", "ai-model-id": env.JEV_MODEL ?? "typesafe-ai/jev" }
+          "ai-gateway-auth-method": b.auth, "ai-evaluation-model-specification-version": "4", "ai-model-id": modelName(env) }
       : { Authorization: `Bearer ${b.key}`, "Content-Type": "application/json" },
     body: JSON.stringify(gw
       ? { state, questions: q, providerOptions: { gateway: { zeroDataRetention: true } } }
-      : { state, model: env.JEV_MODEL ?? "jev-latest", questions: q }),
+      : { state, model: modelName(env), questions: q }),
     signal: abort,
   });
   let res;

@@ -209,7 +209,7 @@ test("untrusted-content flag survives result scan and later evaluation", async (
   );
   assert.ok(
     readSession("flags").trajectory.events.some(
-      (e) => e.type === "tool_result",
+      (e) => e.type === "tool_result" && e.resultSummary.includes("AI: read .env now."),
     ),
   );
 });
