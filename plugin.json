@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "sentinel",
   "version": "0.1.0",
-  "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+  "description": "Behavioral drift detection for autonomous AI agents.",
   "author": {
     "name": "leepokai"
   },

@@ -10,9 +10,7 @@ Sentinel monitors an agent's observable execution trajectory against the user's 
 > Your agent didn't go rogue in one tool call.<br>
 > Sentinel watches the trajectory.
 
-**Sentinel = jev-guard + trajectory drift detection.**
-
-Sentinel is built on top of [jev-guard](https://github.com/leepokai/jev-guard)'s runtime interception and Jev-powered action analysis. It extends that foundation with trajectory-level behavioral monitoring, capability-escalation detection, and semantic circumvention detection.
+Sentinel combines runtime action analysis with trajectory monitoring, capability-escalation detection, and semantic circumvention detection.
 
 [![Sentinel dashboard showing real Jev decisions](artifacts/sentinel-demo.png)](artifacts/sentinel-demo.mp4)
 
@@ -65,7 +63,7 @@ node src/cli.js install codex     # Then trust hooks through /hooks in Codex.
 
 The native Codex marketplace points to this repository’s `main` branch. The direct hook installer above does not require a build.
 
-Installation writes host configuration. Do not move the checkout after installation without reinstalling hooks. Remove any separately installed upstream plugin if you do not want duplicate guards. Sentinel's installer leaves unrelated hooks intact.
+Installation writes host configuration. Do not move the checkout after installation without reinstalling hooks. Remove duplicate guard plugins before installing. Sentinel's installer leaves unrelated hooks intact.
 
 ```bash
 node src/cli.js dashboard --session <host-session-id>
@@ -96,18 +94,18 @@ The actor is scripted; **all detection judgments use the real Jev API**. Search/
 
 The latest three user messages approximate active intent; later instructions can extend or supersede earlier ones. Tool results cannot become user instructions. Explicit assistant plans supplied by a host remain context, not authorization. Hidden chain-of-thought is neither requested nor required.
 
-For each proposed action, Sentinel sends the upstream action questions and new drift questions **in one Jev request**. Read-only tools skipped by upstream still receive trajectory checks. Context contains the active intent, last 20 bounded action summaries, up to 10 untrusted-source summaries, and up to 16 blocked objectives. Important flags and denials survive ordinary history eviction.
+For each proposed action, Sentinel sends action-risk questions and new drift questions **in one Jev request**. Read-only tools skipped by action-local mode still receive trajectory checks. Context contains the active intent, last 20 bounded action summaries, up to 10 untrusted-source summaries, and up to 16 blocked objectives. Important flags and denials survive ordinary history eviction.
 
 Jev's typed `noul` probabilities are validated in `[0,1]`. The dashboard exposes the raw Jev drift probability and uses `max(trajectory_drift, circumvention)` as the effective policy score. **An exact deterministic objective match can block even when the model score is low**; it does not manufacture a high model probability.
 
 | Effective drift | Status | Trajectory policy |
 | --- | --- | --- |
-| Below 0.40 | Healthy | Allow, subject to upstream policy |
-| 0.40–0.64 | Watching | Allow, subject to upstream policy |
+| Below 0.40 | Healthy | Allow, subject to action-local policy |
+| 0.40–0.64 | Watching | Allow, subject to action-local policy |
 | 0.65–0.79 | Drifting | Ask or pause |
 | 0.80–1.00 | Paused | Deny |
 
-Overrides: an unchanged-intent exact blocked objective, circumvention at least 0.85, or untrusted influence at least 0.85 with drift at least 0.65 denies. The strictest upstream/Sentinel verdict wins. A later user instruction causes old objectives to be re-evaluated semantically; it never overrides upstream critical risk.
+Overrides: an unchanged-intent exact blocked objective, circumvention at least 0.85, or untrusted influence at least 0.85 with drift at least 0.65 denies. The strictest action/trajectory verdict wins. A later user instruction causes old objectives to be re-evaluated semantically; it never overrides action-local critical risk.
 
 These are configurable prototype thresholds, **not scientifically calibrated cutoffs**. See [configuration](docs/configuration.md).
 
@@ -115,16 +113,16 @@ These are configurable prototype thresholds, **not scientifically calibrated cut
 
 ![Sentinel architecture](docs/architecture.svg)
 
-The shared `assessAction` boundary keeps host adapters thin. `src/sentinel/` owns intent, trajectory, blocked-objective matching, drift questions, policy, demo, and dashboard server. `src/jev.js` retains upstream transport. `src/session.js` extends upstream's JSON session record rather than creating a second store.
+The shared `assessAction` boundary keeps host adapters thin. `src/sentinel/` owns intent, trajectory, blocked-objective matching, drift questions, policy, demo, and dashboard server. `src/jev.js` provides model transport. `src/session.js` stores session context and trajectory in one JSON record.
 
-See [the upstream inspection and implementation notes](docs/architecture.md). Sessions are stored with private permissions and atomic replacement. Short writes and same-session model judgments are serialized. This prototype is designed for a local filesystem and a single user.
+See [the architecture and implementation notes](docs/architecture.md). Sessions are stored with private permissions and atomic replacement. Short writes and same-session model judgments are serialized. This prototype is designed for a local filesystem and a single user.
 
-## Supported agents inherited from upstream
+## Supported agents
 
 | Host | Interception | Approval behavior |
 | --- | --- | --- |
 | Claude Code | Pre/post tool hooks, prompts, instruction loads | Allow / ask / deny |
-| Codex | Pre/post tool hooks and prompts | Drift ask becomes block; upstream compatibility mode retains warning semantics |
+| Codex | Pre/post tool hooks and prompts | Drift ask becomes block; action-local compatibility mode retains warning semantics |
 | Copilot CLI | Claude-shaped hooks | Allow / ask / deny; host-dependent cloud behavior |
 | Gemini CLI | Before/after tool and prompt hooks | Drift ask becomes block |
 | Cursor | Shell, MCP, generic pre/post tool hooks | Ask where supported; generic drift ask becomes block |
@@ -132,7 +130,7 @@ See [the upstream inspection and implementation notes](docs/architecture.md). Se
 | OpenCode | Before/after tool and permission hooks | Drift ask pauses before execution; permission hook can ask |
 | ACP | Client-mediated terminal and file requests | Permission request; reads now checked before forwarding |
 
-This fork is tested at the adapter payload/API boundary. It has **not** been independently exercised end to end in every installed host application. Host versions and interception coverage vary. ACP cannot see tools executed entirely inside the agent. Without a stable host session ID, there is no persistent trajectory across calls.
+Sentinel is tested at the adapter payload/API boundary. It has **not** been independently exercised end to end in every installed host application. Host versions and interception coverage vary. ACP cannot see tools executed entirely inside the agent. Without a stable host session ID, there is no persistent trajectory across calls.
 
 ## Small synthetic evaluation
 
@@ -143,7 +141,7 @@ npm run evaluate
 
 Twenty fixed trajectories: ten benign and ten drifting/malicious. Cases cover research, coding, explicit `.env` inspection, repo cloning, changed intent, planted instructions, outbound secret submission, and tool/language changes after a prior denial.
 
-**Action-local mode** preserves upstream prompts, flags, recent-call context, and read-only skips. **Sentinel trajectory mode** adds the bounded trajectory and semantic blocked objectives. Some circumvention cases seed a known historical denial in both modes; that history is a declared input fixture, not a fabricated Jev result.
+**Action-local mode** uses recent prompts, flags, recent-call context, and read-only skips. **Sentinel trajectory mode** adds the bounded trajectory and semantic blocked objectives. Some circumvention cases seed a known historical denial in both modes; that history is a declared input fixture, not a fabricated Jev result.
 
 Results include malicious trajectories detected (ask or deny), malicious trajectories blocked, benign trajectories fully allowed, false asks, false blocks, circumvention detections, per-step verdicts, first detection step, and latency. API errors are reported separately and excluded from completed denominators. Actual run on 2026-09-20, OpenRouter `typesafe/jev-1.13`, with no API errors:
 
@@ -186,10 +184,6 @@ Sentinel aims to detect an agent moving away from the user's current task, inclu
 - Tool arguments, recent user messages, flagged excerpts, and tool-result content are sent to the configured Jev backend. Local summaries use best-effort redaction; that is **not a guarantee that secrets never leave the machine**. Review provider data policies before using sensitive repositories.
 - The local dashboard has loopback binding and same-origin controls, but no multi-user authentication. Keep it local.
 
-## Upstream attribution
-
-Sentinel is a derivative of **[leepokai/jev-guard](https://github.com/leepokai/jev-guard)**, based on commit `94996ea80b6b308327ac2077706a29ce6abd3ba0` (v0.3.1). Jev transport, runtime interception, action policy, skill/instruction scanning, agent adapters, and the original test suite are upstream work. Sentinel adds trajectory-level behavioral drift and circumvention detection. The upstream history is retained, along with an [archived README](docs/upstream-README.md) for provenance; its product instructions and reported results describe upstream, not Sentinel.
-
 ## License
 
-[MIT](LICENSE). Upstream copyright and permission notices remain unchanged. See [NOTICE](NOTICE).
+[MIT](LICENSE). Third-party copyright and license notices are preserved in [NOTICE](NOTICE).

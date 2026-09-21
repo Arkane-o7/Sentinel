@@ -1,7 +1,7 @@
 {
   "name": "sentinel",
   "version": "0.1.0",
-  "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+  "description": "Behavioral drift detection for autonomous AI agents.",
   "author": {
     "name": "leepokai"
   },
@@ -9,9 +9,9 @@
   "hooks": "./hooks/codex.json",
   "interface": {
     "displayName": "Sentinel",
-    "shortDescription": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
-    "longDescription": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
-    "developerName": "Sentinel contributors (built on jev-guard)",
+    "shortDescription": "Behavioral drift detection for autonomous AI agents.",
+    "longDescription": "Behavioral drift detection for autonomous AI agents.",
+    "developerName": "Sentinel contributors",
     "category": "Developer Tools",
     "capabilities": [
       "Lifecycle hooks",

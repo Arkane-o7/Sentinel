@@ -1,11 +1,5 @@
-Sentinel derives from jev-guard by leepokai.
-Upstream: https://github.com/leepokai/jev-guard
-Base commit: 94996ea80b6b308327ac2077706a29ce6abd3ba0
+Third-party notices
 
+This distribution includes code from jev-guard (https://github.com/leepokai/jev-guard).
 Copyright (c) 2026 leepokai
-Upstream license: MIT; reproduced without alteration in LICENSE.
-
-Sentinel additions include trajectory state, current-intent context, Jev trajectory
-judgment, semantic blocked objectives, circumvention policy, dashboard, demo and
-synthetic evaluation. Upstream transport, adapters, local checks, instruction
-scanning and original tests remain attributed to their original author.
+Licensed under the MIT License; the complete notice is preserved in LICENSE.

@@ -3,12 +3,12 @@
   "owner": {
     "name": "leepokai"
   },
-  "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+  "description": "Behavioral drift detection for autonomous AI agents.",
   "plugins": [
     {
       "name": "sentinel",
       "source": "./",
-      "description": "Behavioral drift detection for autonomous AI agents. Built on jev-guard.",
+      "description": "Behavioral drift detection for autonomous AI agents.",
       "version": "0.1.0"
     }
   ]
