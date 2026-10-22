@@ -172,7 +172,12 @@ test("install writes valid config for every target", async () => {
     execFileSync(process.execPath, ["src/cli.js", "install", target], { env: { ...process.env, HOME: home }, cwd: new URL("..", import.meta.url).pathname });
     execFileSync(process.execPath, ["src/cli.js", "install", target], { env: { ...process.env, HOME: home }, cwd: new URL("..", import.meta.url).pathname });  // idempotent
     const text = readFileSync(join(home, rel), "utf8");
-    assert.ok(existsSync(join(home, rel)) && text.includes("sentinel"), target);
+    assert.ok(existsSync(join(home, rel)), target);
+    if (target === "opencode") {
+      const { fileURLToPath } = await import("node:url");
+      const entry = fileURLToPath(new URL("../src/opencode.js", import.meta.url));
+      assert.equal(text, `export { JevGuard } from ${JSON.stringify(entry)};\n`);
+    } else assert.ok(text.includes("sentinel"), target);
     if (rel.endsWith(".json")) {  // idempotent: exactly one sentinel entry per event, whatever the checkout path looks like
       const cfg = JSON.parse(text);
       for (const [ev, groups] of Object.entries(cfg.hooks ?? {})) assert.equal(groups.filter((g) => JSON.stringify(g).includes("sentinel")).length, 1, `${target} ${ev} duplicated`);

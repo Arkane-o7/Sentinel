@@ -1,5 +1,18 @@
 # Verification status
 
+## Maintenance checks — 2026-10-22
+
+Verified locally with Node.js 22.23.1 and npm 10.9.8 after maintenance fixes:
+
+- `npm ci`: completed; npm reported no dependency vulnerabilities.
+- `npm run verify`: 43/43 regression tests passed, followed by typecheck, lint, and runtime build.
+- `npm run test:browser`: passed desktop/mobile layout, fixture rendering, text escaping, and JavaScript-error checks.
+- New regression cases reproduced blank-threshold coercion, malformed session acceptance, and missing runtime manifest assets before their fixes. The bundle test launches the copied CLI from outside its checkout. Installer assertions now verify the exact OpenCode import rather than assume a lowercase checkout name.
+
+These checks use controlled fixtures and local files. No live model evaluation or real-host integration rehearsal was rerun; the live observations below remain the September measurements.
+
+## Earlier verification — 2026-09-20
+
 Verified locally on 2026-09-20 with Node.js 22.23.1. Live model runs used OpenRouter Decisions with `typesafe/jev-1.13`.
 
 | Check | Actual outcome |
