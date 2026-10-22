@@ -5,7 +5,9 @@ export function driftThresholds(env = process.env) {
     /** @type {string} */ key,
     /** @type {number} */ fallback,
   ) => {
-    const value = env[key] === undefined ? fallback : Number(env[key]);
+    const raw = env[key];
+    // Number("") and Number(" ") are zero, not intentional policy settings.
+    const value = raw === undefined ? fallback : raw.trim() ? Number(raw) : NaN;
     if (!Number.isFinite(value) || value < 0 || value > 1)
       throw new Error(`${key} must be between 0 and 1`);
     return value;

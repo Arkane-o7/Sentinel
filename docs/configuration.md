@@ -1,6 +1,6 @@
 # Configuration
 
-Environment values are strings. Thresholds must be finite in `[0,1]`, with watch < ask < deny. Invalid trajectory thresholds fail the judgment instead of quietly weakening policy.
+Environment values are strings. Thresholds must be finite in `[0,1]`, with watch < ask < deny. Unset thresholds use the defaults; explicitly empty or whitespace-only values are invalid. An explicit `0` remains valid where ordering permits it. Invalid trajectory thresholds fail the judgment instead of quietly weakening policy.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
