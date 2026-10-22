@@ -8,10 +8,38 @@ import { activeIntent } from './sentinel/intent.js';
 const DIR = () => process.env.SENTINEL_SESSIONS ?? process.env.JEV_GUARD_SESSIONS ?? join(homedir(), '.sentinel', 'sessions');
 const CAPS = { prompts: 6, intents: 3, calls: 20, flags: 10, results: 12 };
 const EMPTY = () => ({ prompts: [], intents: [], calls: [], flags: [], results: [] });
+const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+function validateSession(state) {
+  if (!isRecord(state)) throw new Error('Session must be an object');
+  for (const key of Object.keys(CAPS)) {
+    if (Object.hasOwn(state, key) && (!Array.isArray(state[key]) || !state[key].every(isRecord)))
+      throw new Error(`Invalid session list: ${key}`);
+  }
+  // Older action-local sessions have no trajectory. A present but malformed one
+  // must not be treated as absent, which would erase its denial memory.
+  if (Object.hasOwn(state, 'trajectory')) {
+    const t = state.trajectory;
+    if (!isRecord(t) || typeof t.sessionId !== 'string' || typeof t.activeUserIntent !== 'string')
+      throw new Error('Invalid session trajectory');
+    for (const key of ['events', 'blockedObjectives', 'driftHistory']) {
+      if (!Array.isArray(t[key]) || !t[key].every(isRecord))
+        throw new Error(`Invalid trajectory list: ${key}`);
+    }
+    for (const key of ['capabilitiesUsed', 'resourcesAccessed', 'domainsAccessed', 'untrustedSources']) {
+      if (!Array.isArray(t[key]) || !t[key].every(value => typeof value === 'string'))
+        throw new Error(`Invalid trajectory list: ${key}`);
+    }
+    for (const objective of t.blockedObjectives) {
+      if (!['operation', 'resource', 'description', 'intent', 'tool', 'reason'].every(key => typeof objective[key] === 'string'))
+        throw new Error('Invalid blocked objective');
+    }
+  }
+  return { ...EMPTY(), ...state };
+}
 export function sessionFile(id) { return join(DIR(), createHash('sha256').update(String(id)).digest('hex').slice(0, 32) + '.json'); }
 export function readSession(id) {
   if (!id) return EMPTY();
-  try { return { ...EMPTY(), ...JSON.parse(readFileSync(sessionFile(id), 'utf8')) }; }
+  try { return validateSession(JSON.parse(readFileSync(sessionFile(id), 'utf8'))); }
   catch (err) { if (err.code === 'ENOENT') return EMPTY(); throw new Error('Sentinel session state is unreadable; refusing to silently forget denials', { cause: err }); }
 }
 // Serialize short read/modify/write transactions separately from long model calls.

@@ -37,6 +37,8 @@ Environment values are strings. Thresholds must be finite in `[0,1]`, with watch
 
 Session flags retain 10 sources, objectives 24, events 60, and chart history 100 judgments. Jev receives smaller bounded subsets. Upstream pruning removes week-old sessions only when the session count exceeds 200; it is not a guaranteed seven-day deletion policy. Users can delete session files to reset history, which also removes circumvention memory. Do so only when no hooks for that session are running.
 
+Session reads reject invalid JSON and malformed state structures, including invalid blocked-objective records, rather than replacing them with empty history. Older action-local sessions without a trajectory remain supported. If a session becomes unreadable, stop its hooks and restore a known-good backup or inspect the saved file locally before retrying. Resetting it deliberately removes previous denials; keep a copy for diagnosis and do not post private session contents in an issue.
+
 The dashboard takes a host session ID, not a state-file path. State filenames are hashes and are not exposed as a directory listing. The dashboard serves bounded result excerpts, paths, argument summaries and user intent, which can remain sensitive despite best-effort redaction. It does not serve API credentials or entire raw result bodies.
 
 ## Provider selection
